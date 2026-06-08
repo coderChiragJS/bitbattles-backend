@@ -9,6 +9,7 @@ import { pinoHttp } from 'pino-http';
 import { env } from './config/env.js';
 import { logger } from './config/logger.js';
 import { notFound, errorHandler } from './middleware/error.js';
+import { authRouter } from './modules/auth/routes.js';
 
 export function createApp() {
   const app = express();
@@ -22,6 +23,8 @@ export function createApp() {
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok', time: new Date().toISOString() });
   });
+
+  app.use('/auth', authRouter);
 
   // Feature routers get mounted above this line.
 

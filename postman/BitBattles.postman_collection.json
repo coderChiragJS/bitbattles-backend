@@ -1,0 +1,134 @@
+{
+  "info": {
+    "name": "BitBattles Backend — Auth",
+    "_postman_id": "b17ba771-0a11-4b15-9a0e-bb1700000001",
+    "description": "Auth API for the BitBattles / QuickSec backend (Express + DynamoDB).\nServes the mobile app (customer signup/login) and the admin panel (admin login).\n\nBase URL defaults to http://localhost:4000 via the {{baseUrl}} variable.\nAfter logging in, copy the returned token into the {{token}} (or {{adminToken}}) variable to call /auth/me.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Liveness probe. No auth."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth (Mobile)",
+      "item": [
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"{{fullName}}\",\n  \"email\": \"{{email}}\",\n  \"mobile\": \"{{mobile}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "signup"]
+            },
+            "description": "Customer signup (mobile app). Body: { fullName, email, mobile, password }. Returns { token, user }."
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Customer login. Body: { mobile, password }. Returns { token, user }."
+          }
+        },
+        {
+          "name": "Get current user (/auth/me)",
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Returns the authenticated user. Sends Authorization: Bearer {{token}}. Paste the token from Login/Signup into the {{token}} variable."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth (Admin)",
+      "item": [
+        {
+          "name": "Admin login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile\": \"{{adminMobile}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/admin/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "admin", "login"]
+            },
+            "description": "Admin login (admin panel). Rejects non-admin accounts with 403. Create the admin first:\nnpm run db:create-admin -- --mobile 9990001111 --password 'Str0ngPass!' --name 'Ops Admin'"
+          }
+        },
+        {
+          "name": "Get current admin (/auth/me)",
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Returns the authenticated admin. Sends Authorization: Bearer {{adminToken}}."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000", "type": "string" },
+    { "key": "fullName", "value": "Ravi Kumar", "type": "string" },
+    { "key": "email", "value": "ravi@example.com", "type": "string" },
+    { "key": "mobile", "value": "9876543210", "type": "string" },
+    { "key": "password", "value": "mysecret123", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "adminMobile", "value": "9990001111", "type": "string" },
+    { "key": "adminPassword", "value": "Str0ngPass!", "type": "string" },
+    { "key": "adminToken", "value": "", "type": "string" }
+  ]
+}

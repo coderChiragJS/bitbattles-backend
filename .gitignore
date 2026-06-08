@@ -5,3 +5,7 @@ node_modules/
 *.log
 dist/
 build/
+
+# DynamoDB Local (downloaded jar + local data) — see scripts/dev.mjs
+.dynamodb-local/
+dynamodb-local-metadata.json
